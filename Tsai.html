@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSAI Web Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      padding: 1rem;
+    }
+    #console {
+      background: #1e293b;
+      padding: 1rem;
+      border-radius: 10px;
+      min-height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    #input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 1rem;
+      background: #334155;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    #runBtn {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #0ea5e9;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>TSAI Web Mode</h1>
+  <div id="console">Initializing TSAI...
+</div>
+  <input id="input" placeholder="Enter Python command here" />
+  <button id="runBtn">Run</button>
+
+  <script>
+    let pyodideReady = false;
+    let pyodide = null;
+    let consoleElem = document.getElementById("console");
+
+    async function main() {
+      pyodide = await loadPyodide();
+      pyodideReady = true;
+      consoleElem.textContent += "\nTSAI Ready for Python commands.\n";
+    }
+
+    document.getElementById("runBtn").addEventListener("click", async () => {
+      if (!pyodideReady) {
+        consoleElem.textContent += "\nTSAI is still loading...\n";
+        return;
+      }
+      const input = document.getElementById("input").value;
+      try {
+        const result = await pyodide.runPythonAsync(input);
+        consoleElem.textContent += `\n>>> ${input}\n${result}\n`;
+      } catch (err) {
+        consoleElem.textContent += `\n>>> ${input}\nError: ${err}\n`;
+      }
+      consoleElem.scrollTop = consoleElem.scrollHeight;
+      document.getElementById("input").value = "";
+    });
+
+    main();
+  </script>
+</body>
+</html>
