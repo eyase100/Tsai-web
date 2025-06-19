@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,22 +60,22 @@
     async function main() {
       pyodide = await loadPyodide();
       pyodideReady = true;
-      consoleElem.textContent += "\\nTSAI Ready for Python commands.\\n";
+      consoleElem.textContent += "\nTSAI Ready for Python commands.\n";
       const saved = sessionStorage.getItem("tsaiConsole");
       if (saved) consoleElem.textContent = saved;
     }
 
     document.getElementById("runBtn").addEventListener("click", async () => {
       if (!pyodideReady) {
-        consoleElem.textContent += "\\nTSAI is still loading...\\n";
+        consoleElem.textContent += "\nTSAI is still loading...\n";
         return;
       }
       const input = document.getElementById("input").value;
       try {
         const result = await pyodide.runPythonAsync(input);
-        consoleElem.textContent += `\\n>>> ${input}\\n${result}\\n`;
+        consoleElem.textContent += `\n>>> ${input}\n${result}\n`;
       } catch (err) {
-        consoleElem.textContent += `\\n>>> ${input}\\nError: ${err}\\n`;
+        consoleElem.textContent += `\n>>> ${input}\nError: ${err}\n`;
       }
       consoleElem.scrollTop = consoleElem.scrollHeight;
       document.getElementById("input").value = "";
@@ -103,4 +104,4 @@
     main();
   </script>
 </body>
-    </html>
+</html>
