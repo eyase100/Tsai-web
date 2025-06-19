@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
-<html lang="en
-  <link rel="manifest" href="manifest.json">
+<html lang="en">
+<head>
   <meta charset="UTF-8">
-  <meta name="viewport" content=width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TSAI Web Dashboard</title>
+  <link rel="manifest" href="manifest.json">
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
   <style>
     body {
@@ -59,30 +59,27 @@
     async function main() {
       pyodide = await loadPyodide();
       pyodideReady = true;
-      consoleElem.textContent += "\nTSAI Ready for Python commands.\n";
-
-      // Restore previous session
+      consoleElem.textContent += "\\nTSAI Ready for Python commands.\\n";
       const saved = sessionStorage.getItem("tsaiConsole");
       if (saved) consoleElem.textContent = saved;
     }
 
     document.getElementById("runBtn").addEventListener("click", async () => {
       if (!pyodideReady) {
-        consoleElem.textContent += "\nTSAI is still loading...\n";
+        consoleElem.textContent += "\\nTSAI is still loading...\\n";
         return;
       }
       const input = document.getElementById("input").value;
       try {
         const result = await pyodide.runPythonAsync(input);
-        consoleElem.textContent += `\n>>> ${input}\n${result}\n`;
+        consoleElem.textContent += `\\n>>> ${input}\\n${result}\\n`;
       } catch (err) {
-        consoleElem.textContent += `\n>>> ${input}\nError: ${err}\n`;
+        consoleElem.textContent += `\\n>>> ${input}\\nError: ${err}\\n`;
       }
       consoleElem.scrollTop = consoleElem.scrollHeight;
       document.getElementById("input").value = "";
     });
 
-    // Enter key runs code
     document.getElementById("input").addEventListener("keypress", function (e) {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -90,12 +87,10 @@
       }
     });
 
-    // Save session before reload
     window.addEventListener("beforeunload", () => {
       sessionStorage.setItem("tsaiConsole", consoleElem.textContent);
     });
 
-    // Save log as text file
     document.getElementById("saveBtn").addEventListener("click", () => {
       const blob = new Blob([consoleElem.textContent], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
@@ -108,4 +103,4 @@
     main();
   </script>
 </body>
-</html>
+    </html>
