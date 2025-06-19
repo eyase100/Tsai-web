@@ -1,23 +1,7 @@
-
 {
-  "name": "TSAI Assistant",
-  "short_name": "TSAI",
-  "description": "Temporal Synthetic Android Intelligence — your offline Python-powered assistant.",
-  "start_url": "Tsai_Enhanced.html",
-  "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0ea5e9",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "tsai-icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "tsai-icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "name": "Tsai.html",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "short_name": "Tsai.html",
+  "id": "Eyase"
 }
