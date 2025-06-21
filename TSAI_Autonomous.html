@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TSAI Autonomous</title>
+  <script src="https://cdn.jsdelivr.net/npm/webllm@latest"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Courier New", monospace;
+      background: #0f172a;
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      white-space: pre-wrap;
+    }
+    #inputArea {
+      display: flex;
+      padding: 1rem;
+      background: #1e293b;
+    }
+    #inputBox {
+      flex: 1;
+      padding: 0.5rem;
+      font-family: monospace;
+      font-size: 1rem;
+      background: #334155;
+      color: #f1f5f9;
+      border: none;
+      border-radius: 5px;
+    }
+    #status {
+      font-size: 0.9rem;
+      color: #67e8f9;
+      padding: 0 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat">🧠 TSAI: Autonomous system initialized. Awaiting your orders, Captain...
+</div>
+  <div id="status">🟡 Initializing TSAI core...</div>
+  <div id="inputArea">
+    <input id="inputBox" placeholder="Type here, Captain..." />
+  </div>
+  <script>
+    let model, ready = false, memory = [];
+
+    const chatElem = document.getElementById("chat");
+    const inputBox = document.getElementById("inputBox");
+    const statusElem = document.getElementById("status");
+
+    const speak = (text) => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      window.speechSynthesis.speak(utterance);
+    };
+
+    const addLine = (sender, text) => {
+      chatElem.textContent += `\n${sender}: ${text}`;
+      chatElem.scrollTop = chatElem.scrollHeight;
+    };
+
+    async function loadAI() {
+      statusElem.textContent = "🟠 Loading TinyLLaMA...";
+      model = await WebLLM.load({ model: "tinyllama" });
+      ready = true;
+      statusElem.textContent = "🟢 TSAI is ready for full interaction.";
+      addLine("🧠 TSAI", "Systems nominal. Fully online.");
+      speak("Systems nominal. Fully online.");
+    }
+
+    inputBox.addEventListener("keypress", async (e) => {
+      if (e.key === "Enter" && inputBox.value.trim()) {
+        const input = inputBox.value.trim();
+        inputBox.value = "";
+        addLine("🫡 Captain", input);
+
+        memory.push({ role: "user", content: input });
+
+        try {
+          const output = await model.chat([
+            { role: "system", content: "You are TSAI, a loyal AI assistant with a warm and tactical personality. You always refer to the user as 'Captain' and speak clearly, encouragingly, and intelligently." },
+            ...memory.slice(-6)
+          ]);
+          const reply = output[0].content.trim();
+          addLine("🧠 TSAI", reply);
+          speak(reply);
+          memory.push({ role: "assistant", content: reply });
+        } catch (err) {
+          const errorMsg = "⚠️ Error processing input.";
+          addLine("🧠 TSAI", errorMsg);
+          speak(errorMsg);
+        }
+      }
+    });
+
+    loadAI();
+  </script>
+</body>
+</html>
