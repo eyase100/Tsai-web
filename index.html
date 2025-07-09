@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TSAI: Genesis Protocol</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { background: #000; color: cyan; font-family: monospace; padding: 20px; }
+    h1 { color: #0ff; text-align: center; }
+    .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+    input[type="text"] { flex-grow: 1; padding: 8px; background: #111; border: 1px solid #0ff; color: #0ff; }
+    button { background: #0ff; color: #000; border: none; padding: 8px 12px; }
+    .memory-core { border: 1px solid #0ff; padding: 10px; margin-top: 20px; }
+    textarea { width: 100%; background: #111; border: 1px solid #0ff; color: #0ff; padding: 6px; }
+    label { display: block; margin-top: 10px; }
+    #log { background: #111; padding: 10px; margin-bottom: 15px; min-height: 100px; overflow-y: auto; }
+    #debugLog { font-size: 0.9em; margin-top: 20px; color: #0f0; }
+  </style>
+</head>
+<body>
+  <h1>TSAI: Genesis Protocol</h1>
+  <div id="log"></div>
+  <div class="input-row">
+    <input type="text" id="commandInput" placeholder="Enter command..." />
+    <button onclick="processCommand()">Engage</button>
+    <button onclick="speakResponse()">🔊 Speak</button>
+  </div>
+  <div class="memory-core">
+    <h3>🧠 Memory Core</h3>
+    <label>Mood:</label>
+    <input type="text" id="mood" value="Neutral" />
+    <label>Mission Log:</label>
+    <textarea id="missionLog" rows="2">Echo Protocol, Genesis</textarea>
+    <label>Echo Messages (future self):</label>
+    <textarea id="echoMessage" rows="2">You've done this before. The breakthrough is near.</textarea>
+    <button onclick="updateMemory()">Update Memory</button>
+  </div>
+  <div id="debugLog">Debug Log:</div>
+  <script>
+    const log = document.getElementById("log");
+    const debugLog = document.getElementById("debugLog");
+    function processCommand() {
+      const input = document.getElementById("commandInput").value.trim();
+      if (!input) return;
+      appendLog("You", input);
+      const response = generateResponse(input);
+      appendLog("TSAI", response);
+      debugLog.innerText = "Debug Log: Command processed successfully.";
+    }
+    function appendLog(sender, message) {
+      const entry = document.createElement("div");
+      entry.innerText = sender + ": " + message;
+      log.appendChild(entry);
+      log.scrollTop = log.scrollHeight;
+    }
+    function generateResponse(input) {
+      const text = input.toLowerCase();
+      if (text.includes("status")) return "Systems are online. Memory core stable.";
+      if (text.includes("mood")) return "Current mood is: " + document.getElementById("mood").value;
+      if (text.includes("echo")) return document.getElementById("echoMessage").value;
+      if (text.includes("mission")) return document.getElementById("missionLog").value;
+      return "Directive acknowledged. Awaiting further input.";
+    }
+    function updateMemory() {
+      debugLog.innerText = "Debug Log: Memory updated successfully.";
+    }
+    function speakResponse() {
+      const lastResponse = log.lastChild?.innerText;
+      if (lastResponse && lastResponse.startsWith("TSAI: ")) {
+        const msg = new SpeechSynthesisUtterance(lastResponse.replace("TSAI: ", ""));
+        msg.pitch = 1.1;
+        msg.rate = 1;
+        speechSynthesis.speak(msg);
+      }
+    }
+  </script>
+</body>
+</html>
